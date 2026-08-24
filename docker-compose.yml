@@ -1,0 +1,171 @@
+# FinTrackPro — local Docker dev environment.
+#
+# Usage:
+#   Full stack (app + API + database):   docker compose up dev api
+#     -> app at http://localhost:8081, API at http://localhost:4000
+#   App only (no sync backend):          docker compose up dev
+#   Browser preview only:                docker compose up web
+#   Phone via Expo Go only:              docker compose up tunnel
+#
+# One Metro process serves both web and devices, so `dev` covers the app.
+# Don't run `web` and `tunnel` at the same time — they'd both bind port 8081.
+#
+# Cross-device sync: the app talks to the API at EXPO_PUBLIC_API_BASE_URL.
+#   - Web (browser on this PC):  http://localhost:4000 works out of the box.
+#   - Phone (Expo Go):           localhost won't reach your PC. Set API_URL to
+#     your PC's LAN IP first, e.g. PowerShell:
+#        $env:API_URL="http://192.168.1.20:4000"; docker compose up dev api
+#     (Find the IP with `ipconfig`; phone and PC must share Wi-Fi.)
+#
+# Windows / Docker Desktop notes:
+#   - Source is bind-mounted so edits hot-reload. node_modules stays in an
+#     anonymous volume so host modules never shadow the container's.
+#   - File watching uses polling (inotify is unreliable on Windows bind mounts).
+
+x-app-env: &app-env
+  EXPO_NO_TELEMETRY: "1"
+  CHOKIDAR_USEPOLLING: "true"
+  WATCHPACK_POLLING: "true"
+  EXPO_PUBLIC_DATA_SOURCE: "mock"
+  EXPO_PUBLIC_API_BASE_URL: "${API_URL:-http://localhost:4000}"
+
+services:
+  # --- Postgres database ---
+  db:
+    image: postgres:16-alpine
+    container_name: fintrackpro-db
+    environment:
+      POSTGRES_USER: fintrack
+      POSTGRES_PASSWORD: fintrack
+      POSTGRES_DB: fintrack
+    ports:
+      - "5432:5432" # exposed for inspection; not required by the app
+    volumes:
+      - fintrack-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fintrack"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # --- Sync + auth API (Node + Express) ---
+  api:
+    build: ./server
+    image: fintrackpro-api:dev
+    container_name: fintrackpro-api
+    command: node dist/index.js
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgres://fintrack:fintrack@db:5432/fintrack"
+      JWT_SECRET: "${JWT_SECRET:-change-me-in-production}"
+      PORT: "4000"
+    ports:
+      - "4000:4000"
+
+  # --- Web + phone in one process: browser at localhost:8081 AND Expo Go QR ---
+  # Uses Expo Go (`--go`) explicitly: expo-dev-client is installed (for EAS dev
+  # builds), which would otherwise flip `expo start` into dev-build mode and
+  # produce a QR Expo Go/Camera can't open. Once you build a dev client, use
+  # the `devclient` service instead. The tunnel (ngrok) can fail transiently, so
+  # auto-retry up to 15 times.
+  dev:
+    build: .
+    image: fintrackpro:dev
+    container_name: fintrackpro-dev
+    command: >
+      sh -c 'n=0; until npx expo start --tunnel --go; do n=$$((n+1)); if [ $$n -ge 15 ]; then echo "tunnel failed 15x, giving up"; exit 1; fi; echo "== tunnel start failed (attempt $$n) — retrying in 5s =="; sleep 5; done'
+    ports:
+      - "8081:8081" # Metro dev server + web app
+      - "19000:19000"
+      - "19001:19001"
+      - "19002:19002"
+    environment: *app-env
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    stdin_open: true
+    tty: true
+
+  # --- Browser preview: open http://localhost:8081 ---
+  web:
+    build: .
+    image: fintrackpro:dev
+    container_name: fintrackpro-web
+    command: npx expo start --web
+    ports:
+      - "8081:8081" # Metro + web
+      - "19006:19006" # classic web dev server (fallback)
+    environment: *app-env
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    stdin_open: true
+    tty: true
+
+  # --- Expo Go on a physical phone, anywhere, via ngrok tunnel (auto-retry) ---
+  tunnel:
+    build: .
+    image: fintrackpro:dev
+    container_name: fintrackpro-tunnel
+    command: >
+      sh -c 'n=0; until npx expo start --tunnel --go; do n=$$((n+1)); if [ $$n -ge 15 ]; then echo "tunnel failed 15x, giving up"; exit 1; fi; echo "== tunnel start failed (attempt $$n) — retrying in 5s =="; sleep 5; done'
+    ports:
+      - "8081:8081"
+      - "19000:19000"
+      - "19001:19001"
+      - "19002:19002"
+    environment: *app-env
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    stdin_open: true
+    tty: true
+
+  # --- For an installed EAS DEV BUILD (not Expo Go) — see EAS.md ---
+  # Use this only AFTER you have built and installed the FinTrackPro dev client.
+  # Open the dev build app on your phone and scan this tunnel QR (or enter the
+  # URL). Do NOT scan a dev-client QR with the Camera app or Expo Go.
+  devclient:
+    build: .
+    image: fintrackpro:dev
+    container_name: fintrackpro-devclient
+    command: >
+      sh -c 'n=0; until npx expo start --tunnel --dev-client; do n=$$((n+1)); if [ $$n -ge 15 ]; then echo "tunnel failed 15x, giving up"; exit 1; fi; echo "== tunnel start failed (attempt $$n) — retrying in 5s =="; sleep 5; done'
+    ports:
+      - "8081:8081"
+      - "19000:19000"
+      - "19001:19001"
+      - "19002:19002"
+    environment: *app-env
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    stdin_open: true
+    tty: true
+
+  # --- Expo Go over your local network (advanced) ---
+  # Set LAN_IP to your PC's IPv4 (e.g. 192.168.1.20) before `up`:
+  #   PowerShell:  $env:LAN_IP="192.168.1.20"; docker compose up lan
+  lan:
+    build: .
+    image: fintrackpro:dev
+    container_name: fintrackpro-lan
+    command: npx expo start --host lan --go
+    ports:
+      - "8081:8081"
+      - "19000:19000"
+      - "19001:19001"
+      - "19002:19002"
+    environment:
+      <<: *app-env
+      REACT_NATIVE_PACKAGER_HOSTNAME: "${LAN_IP:-}"
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    stdin_open: true
+    tty: true
+
+volumes:
+  fintrack-db:

@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Expo / Metro
+.expo/
+dist/
+web-build/
+*.tsbuildinfo
+
+# EAS
+.eas/
+
+# Env & secrets (never commit real secrets)
+.env
+.env.*
+!.env.example
+
+# Logs & OS files
+*.log
+npm-debug.*
+yarn-debug.*
+.DS_Store
