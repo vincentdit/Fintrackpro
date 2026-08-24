@@ -1,17 +1,11 @@
-# Render Blueprint — deploys the whole FinTrackPro stack from this repo.
-# In Render: New + → "Blueprint" → connect this GitHub repo. Render reads this
-# file and creates the database, the API, and the web app.
+# Render Blueprint — API + web only (free). The database is a free external
+# Postgres (Neon), so Render does not require a card.
 #
-# After the first deploy, set the two "sync: false" env vars (they can't be
-# known ahead of time) in the Render dashboard:
-#   - fintrackpro-api  → CORS_ORIGIN            = your web URL (below)
-#   - fintrackpro-web  → EXPO_PUBLIC_API_BASE_URL = your API URL
-# then trigger a redeploy of the web service so the URL is baked into the build.
-
-databases:
-  - name: fintrackpro-db
-    databaseName: fintrack
-    user: fintrack
+# In Render: New + → "Blueprint" → connect this repo → Apply. During/after the
+# first deploy, set these env vars in the Render dashboard:
+#   - fintrackpro-api → DATABASE_URL            = your Neon connection string
+#   - fintrackpro-api → CORS_ORIGIN             = your web URL (after deploy)
+#   - fintrackpro-web → EXPO_PUBLIC_API_BASE_URL = your API URL (then redeploy web)
 
 services:
   # --- API (Node + Express, built from server/Dockerfile) ---
@@ -20,12 +14,11 @@ services:
     runtime: docker
     dockerfilePath: ./server/Dockerfile
     dockerContext: ./server
+    plan: free
     healthCheckPath: /health
     envVars:
       - key: DATABASE_URL
-        fromDatabase:
-          name: fintrackpro-db
-          property: connectionString
+        sync: false # paste your Neon connection string here
       - key: DATABASE_SSL
         value: "true"
       - key: JWT_SECRET
