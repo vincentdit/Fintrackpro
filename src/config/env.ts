@@ -10,6 +10,12 @@ interface AppConfig {
   dataSource: DataSource;
   apiBaseUrl: string;
   plaidEnv: 'sandbox' | 'development' | 'production';
+  /**
+   * Whether the bank-linking (Plaid) UI is shown. Off by default so the
+   * shipped app is a manual tracker; only real, working data reaches users.
+   * Enable with EXPO_PUBLIC_ENABLE_BANK_SYNC=true once live Plaid is wired.
+   */
+  bankSyncEnabled: boolean;
 }
 
 function readDataSource(): DataSource {
@@ -22,4 +28,5 @@ export const config: AppConfig = {
   apiBaseUrl: process.env.EXPO_PUBLIC_API_BASE_URL ?? 'https://api.example.com',
   plaidEnv:
     (process.env.EXPO_PUBLIC_PLAID_ENV as AppConfig['plaidEnv']) ?? 'sandbox',
+  bankSyncEnabled: process.env.EXPO_PUBLIC_ENABLE_BANK_SYNC === 'true',
 };

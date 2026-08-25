@@ -13,6 +13,7 @@ import {
 import { formatCurrency } from '@/utils/format';
 import { useTranslation } from '@/i18n/useTranslation';
 import { Button, Card, ProgressBar, Screen, Text, TransactionRow } from '@/components';
+import { config } from '@/config/env';
 import { RootStackParamList } from '@/navigation/types';
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
@@ -79,12 +80,14 @@ export function DashboardScreen() {
           onPress={() => navigation.navigate('AddTransaction')}
           style={{ flex: 1 }}
         />
-        <Button
-          title={t('dash.linkBank')}
-          variant="secondary"
-          onPress={() => navigation.navigate('LinkAccount')}
-          style={{ flex: 1 }}
-        />
+        {config.bankSyncEnabled && (
+          <Button
+            title={t('dash.linkBank')}
+            variant="secondary"
+            onPress={() => navigation.navigate('LinkAccount')}
+            style={{ flex: 1 }}
+          />
+        )}
       </View>
 
       {statuses.length > 0 && (

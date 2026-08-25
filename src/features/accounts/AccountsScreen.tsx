@@ -148,7 +148,7 @@ export function AccountsScreen() {
                 <Text variant="small" tone="muted">
                   {a.institution} · {t(`accountType.${a.type}` as TKey)}
                   {a.mask ? ` ••${a.mask}` : ''}
-                  {a.isLinked ? ' · 🔗' : ''}
+                  {config.bankSyncEnabled && a.isLinked ? ' · 🔗' : ''}
                 </Text>
               </View>
               <Text weight="700" tone={a.balanceMinor < 0 ? 'expense' : 'default'}>
@@ -165,15 +165,17 @@ export function AccountsScreen() {
           onPress={() => navigation.navigate('EditAccount')}
           style={{ flex: 1 }}
         />
-        <Button
-          title={t('accounts.linkAccount')}
-          variant="secondary"
-          onPress={() => navigation.navigate('LinkAccount')}
-          style={{ flex: 1 }}
-        />
+        {config.bankSyncEnabled && (
+          <Button
+            title={t('accounts.linkAccount')}
+            variant="secondary"
+            onPress={() => navigation.navigate('LinkAccount')}
+            style={{ flex: 1 }}
+          />
+        )}
       </View>
 
-      {linkedItems.length > 0 && (
+      {config.bankSyncEnabled && linkedItems.length > 0 && (
         <View style={{ marginTop: theme.spacing(4) }}>
           <Text variant="h3" style={{ marginBottom: theme.spacing(2) }}>
             {t('accounts.linkedInstitutions')}
