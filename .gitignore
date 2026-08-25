@@ -20,3 +20,5 @@ web-build/
 npm-debug.*
 yarn-debug.*
 .DS_Store
+
+_to_delete/

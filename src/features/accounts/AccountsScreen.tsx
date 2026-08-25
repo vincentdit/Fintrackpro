@@ -6,6 +6,7 @@ import { useTheme } from '@/theme/ThemeProvider';
 import { useStore } from '@/store/useStore';
 import { totalBalance } from '@/store/selectors';
 import { formatCurrency } from '@/utils/format';
+import { confirmAction, notify } from '@/utils/confirm';
 import { Button, Card, Screen, SegmentedControl, Text } from '@/components';
 import { bankSync } from '@/services/plaid';
 import { refreshRates } from '@/services/fx';
@@ -53,26 +54,26 @@ export function AccountsScreen() {
   const [deletingAccount, setDeletingAccount] = useState(false);
 
   const handleDeleteAccount = () => {
-    Alert.alert(t('settings.deleteAccount'), t('settings.deleteAccountConfirm'), [
-      { text: t('common.cancel'), style: 'cancel' },
-      {
-        text: t('settings.deleteAccount'),
-        style: 'destructive',
-        onPress: async () => {
-          setDeletingAccount(true);
-          try {
-            await deleteAccount();
-          } catch (e) {
-            Alert.alert(
-              t('settings.deleteAccountFailed'),
-              e instanceof Error ? e.message : t('accounts.tryAgain'),
-            );
-          } finally {
-            setDeletingAccount(false);
-          }
-        },
+    confirmAction({
+      title: t('settings.deleteAccount'),
+      message: t('settings.deleteAccountConfirm'),
+      confirmText: t('settings.deleteAccount'),
+      cancelText: t('common.cancel'),
+      destructive: true,
+      onConfirm: async () => {
+        setDeletingAccount(true);
+        try {
+          await deleteAccount();
+        } catch (e) {
+          notify(
+            t('settings.deleteAccountFailed'),
+            e instanceof Error ? e.message : t('accounts.tryAgain'),
+          );
+        } finally {
+          setDeletingAccount(false);
+        }
       },
-    ]);
+    });
   };
 
   const ratesStatus = refreshingRates
@@ -300,10 +301,14 @@ export function AccountsScreen() {
 
         <Pressable
           onPress={() =>
-            Alert.alert(t('settings.resetDemo'), t('settings.resetConfirm'), [
-              { text: t('common.cancel'), style: 'cancel' },
-              { text: t('settings.reset'), style: 'destructive', onPress: () => resetToSeed() },
-            ])
+            confirmAction({
+              title: t('settings.resetDemo'),
+              message: t('settings.resetConfirm'),
+              confirmText: t('settings.reset'),
+              cancelText: t('common.cancel'),
+              destructive: true,
+              onConfirm: () => resetToSeed(),
+            })
           }
           style={{ paddingVertical: theme.spacing(2) }}
         >
