@@ -1,0 +1,33 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1024" y2="1024" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0B1220"/>
+      <stop offset="0.55" stop-color="#122a5e"/>
+      <stop offset="1" stop-color="#2E5BFF"/>
+    </linearGradient>
+    <linearGradient id="line" x1="300" y1="640" x2="720" y2="320" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7FE7C4"/>
+      <stop offset="1" stop-color="#FFFFFF"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Full-bleed background (opaque, no rounded corners; the OS masks it) -->
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+
+  <!-- Ascending bars -->
+  <g fill="#FFFFFF" fill-opacity="0.22">
+    <rect x="322" y="556" width="96" height="176" rx="26"/>
+    <rect x="464" y="470" width="96" height="262" rx="26"/>
+    <rect x="606" y="372" width="96" height="360" rx="26"/>
+  </g>
+
+  <!-- Trend line -->
+  <polyline points="330,632 470,516 566,556 700,352"
+            fill="none" stroke="url(#line)" stroke-width="52"
+            stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Arrowhead -->
+  <path d="M624 336 L704 336 L704 416"
+        fill="none" stroke="url(#line)" stroke-width="52"
+        stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

@@ -7,7 +7,9 @@
     "userInterfaceStyle": "automatic",
     "scheme": "fintrackpro",
     "newArchEnabled": true,
+    "icon": "./assets/icon.png",
     "splash": {
+      "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#0B1220"
     },
@@ -22,11 +24,13 @@
     "android": {
       "package": "com.fintrackpro.app",
       "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0B1220"
       }
     },
     "web": {
-      "bundler": "metro"
+      "bundler": "metro",
+      "favicon": "./assets/favicon.png"
     },
     "plugins": ["expo-secure-store", "expo-local-authentication"],
     "experiments": {
