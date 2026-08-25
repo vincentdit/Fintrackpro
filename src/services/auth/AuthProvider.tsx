@@ -9,6 +9,7 @@ interface AuthContextValue {
   register: (email: string, password: string, name: string) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  deleteAccount: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -31,6 +32,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     register: (email, password, name) => SyncEngine.register(email, password, name),
     login: (email, password) => SyncEngine.login(email, password),
     logout: () => SyncEngine.logout(),
+    deleteAccount: () => SyncEngine.deleteAccount(),
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

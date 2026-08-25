@@ -16,11 +16,16 @@ async function storeTokens(accessToken: string, refreshToken: string): Promise<v
   await secureStorage.set(REFRESH_KEY, refreshToken);
 }
 
-async function rawFetch<T>(path: string, body?: unknown, accessToken?: string | null): Promise<T> {
+async function rawFetch<T>(
+  path: string,
+  body?: unknown,
+  accessToken?: string | null,
+  method?: string,
+): Promise<T> {
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };
   if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
   const res = await fetch(`${config.apiBaseUrl}${path}`, {
-    method: body === undefined ? 'GET' : 'POST',
+    method: method ?? (body === undefined ? 'GET' : 'POST'),
     headers,
     body: body === undefined ? undefined : JSON.stringify(body),
   });
@@ -51,15 +56,15 @@ async function refreshAccess(): Promise<boolean> {
 }
 
 /** Authenticated request with one automatic refresh-and-retry on 401. */
-async function authed<T>(path: string, body?: unknown): Promise<T> {
+async function authed<T>(path: string, body?: unknown, method?: string): Promise<T> {
   const access = await secureStorage.get(ACCESS_KEY);
   try {
-    return await rawFetch<T>(path, body, access);
+    return await rawFetch<T>(path, body, access, method);
   } catch (e) {
     const status = (e as Error & { status?: number }).status;
     if (status === 401 && (await refreshAccess())) {
       const fresh = await secureStorage.get(ACCESS_KEY);
-      return rawFetch<T>(path, body, fresh);
+      return rawFetch<T>(path, body, fresh, method);
     }
     throw e;
   }
@@ -101,6 +106,12 @@ export const ApiClient = {
 
   me(): Promise<AuthUser> {
     return authed<{ user: AuthUser }>('/auth/me').then((r) => r.user);
+  },
+
+  /** Permanently delete the account on the server, then clear local tokens. */
+  async deleteAccount(): Promise<void> {
+    await authed('/auth/account', undefined, 'DELETE');
+    await this.clearTokens();
   },
 
   sync(lastPulledAt: string | null, changes: SyncChanges): Promise<SyncPullResponse> {

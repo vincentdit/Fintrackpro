@@ -24,7 +24,7 @@ export function AccountsScreen() {
   const theme = useTheme();
   const { t } = useTranslation();
   const navigation = useNavigation<Nav>();
-  const { logout, email } = useAuth();
+  const { logout, email, deleteAccount } = useAuth();
 
   const accounts = useStore((s) => s.accounts);
   const user = useStore((s) => s.user);
@@ -48,6 +48,31 @@ export function AccountsScreen() {
     } finally {
       setRefreshingRates(false);
     }
+  };
+
+  const [deletingAccount, setDeletingAccount] = useState(false);
+
+  const handleDeleteAccount = () => {
+    Alert.alert(t('settings.deleteAccount'), t('settings.deleteAccountConfirm'), [
+      { text: t('common.cancel'), style: 'cancel' },
+      {
+        text: t('settings.deleteAccount'),
+        style: 'destructive',
+        onPress: async () => {
+          setDeletingAccount(true);
+          try {
+            await deleteAccount();
+          } catch (e) {
+            Alert.alert(
+              t('settings.deleteAccountFailed'),
+              e instanceof Error ? e.message : t('accounts.tryAgain'),
+            );
+          } finally {
+            setDeletingAccount(false);
+          }
+        },
+      },
+    ]);
   };
 
   const ratesStatus = refreshingRates
@@ -289,6 +314,18 @@ export function AccountsScreen() {
 
         <Pressable onPress={() => logout()} style={{ paddingVertical: theme.spacing(2) }}>
           <Text tone="expense" weight="600">{t('settings.signOut')}</Text>
+        </Pressable>
+
+        <View style={{ height: 1, backgroundColor: theme.colors.border, marginVertical: theme.spacing(2) }} />
+
+        <Pressable
+          onPress={handleDeleteAccount}
+          disabled={deletingAccount}
+          style={{ paddingVertical: theme.spacing(2), opacity: deletingAccount ? 0.5 : 1 }}
+        >
+          <Text tone="expense" weight="700">
+            {deletingAccount ? t('settings.deletingAccount') : t('settings.deleteAccount')}
+          </Text>
         </Pressable>
       </Card>
 

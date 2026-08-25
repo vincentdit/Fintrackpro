@@ -148,3 +148,14 @@ authRouter.get('/me', requireAuth, async (req: AuthedRequest, res: Response) => 
   if (!user) return res.status(404).json({ error: 'not found' });
   return res.json({ user: publicUser(user) });
 });
+
+/**
+ * Permanently delete the authenticated user's account and ALL their data.
+ * `records` and `refresh_tokens` have ON DELETE CASCADE on user_id, so
+ * removing the users row removes everything. Required by the App Store for
+ * apps that offer account creation.
+ */
+authRouter.delete('/account', requireAuth, async (req: AuthedRequest, res: Response) => {
+  await pool.query('DELETE FROM users WHERE id = $1', [req.userId]);
+  return res.json({ ok: true });
+});

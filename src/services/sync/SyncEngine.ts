@@ -79,6 +79,12 @@ export const SyncEngine = {
     useStore.getState().clearForLogout();
   },
 
+  /** Permanently delete the account and reset the device to a clean state. */
+  async deleteAccount(): Promise<void> {
+    await ApiClient.deleteAccount();
+    useStore.getState().clearForLogout();
+  },
+
   /** Called on app launch: if a session exists, refresh and sync. */
   async bootstrap(): Promise<void> {
     if (!(await ApiClient.hasSession())) return;
