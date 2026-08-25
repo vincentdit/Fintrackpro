@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FinTrackPro — Privacy Policy</title>
+  <style>
+    :root {
+      --bg: #f7f8fa;
+      --card: #ffffff;
+      --text: #1a2233;
+      --muted: #5b6472;
+      --border: #e4e8ee;
+      --accent: #2563eb;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b1220;
+        --card: #121a2b;
+        --text: #e7ecf4;
+        --muted: #9aa6b8;
+        --border: #22304a;
+        --accent: #5b9bff;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrap { max-width: 760px; margin: 0 auto; padding: 40px 20px 80px; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 28px;
+    }
+    h1 { font-size: 1.9rem; margin: 0 0 4px; letter-spacing: -0.02em; }
+    h2 { font-size: 1.2rem; margin: 32px 0 8px; letter-spacing: -0.01em; }
+    p, li { color: var(--text); }
+    .muted { color: var(--muted); }
+    .eyebrow { color: var(--accent); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 12px; }
+    a { color: var(--accent); }
+    ul { padding-left: 20px; }
+    li { margin: 4px 0; }
+    .meta { font-size: 0.9rem; margin-top: 6px; }
+    .note {
+      margin-top: 28px;
+      padding: 14px 16px;
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+    footer { text-align: center; margin-top: 28px; font-size: 0.82rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <p class="eyebrow">FinTrackPro</p>
+      <h1>Privacy Policy</h1>
+      <p class="muted meta">Effective date: August 25, 2026 &middot; Last updated: August 25, 2026</p>
+
+      <p>This Privacy Policy explains how FinTrackPro (“the app,” “we,” “us”) collects,
+      uses, stores, and protects your information when you use the FinTrackPro personal
+      finance application and its associated web app and backend service. By creating an
+      account or using the app, you agree to the practices described here.</p>
+
+      <h2>Who we are</h2>
+      <p>FinTrackPro is developed and operated by Vincent J. Maro, an independent developer.
+      If you have any questions about this policy or your data, contact us at
+      <a href="mailto:vincentdit@gmail.com">vincentdit@gmail.com</a>.</p>
+
+      <h2>Information we collect</h2>
+      <p>We collect only the information needed to provide the app’s features:</p>
+      <ul>
+        <li><strong>Account information</strong> — the email address and name you provide
+        when you register, and a password. Your password is never stored in plain text; it
+        is protected using a one-way cryptographic hash (bcrypt).</li>
+        <li><strong>Financial information you enter</strong> — the accounts, balances,
+        transactions, budgets, goals, and categories you create or import within the app.</li>
+        <li><strong>App settings</strong> — your preferences, such as base currency,
+        language, and whether biometric unlock is enabled.</li>
+        <li><strong>Technical data</strong> — basic information required to operate the
+        service securely, such as authentication tokens and timestamps used to synchronize
+        your data across your devices.</li>
+      </ul>
+      <p>We do <strong>not</strong> collect advertising identifiers, and the app does not
+      include third-party advertising or analytics tracking.</p>
+
+      <h2>Bank connections (Plaid)</h2>
+      <p>If you choose to link a bank account, FinTrackPro uses Plaid to establish that
+      connection. When this feature is enabled, you enter your bank credentials directly
+      with Plaid — FinTrackPro does not see or store your bank login credentials. Plaid
+      provides the app with transaction and balance data for the accounts you connect.
+      Plaid’s handling of your information is governed by Plaid’s own privacy policy at
+      <a href="https://plaid.com/legal/" target="_blank" rel="noopener">plaid.com/legal</a>.
+      The current version of the app operates Plaid in a sandbox/mock mode and does not
+      connect to real financial institutions unless and until this is explicitly enabled.</p>
+
+      <h2>Exchange rates</h2>
+      <p>To convert between currencies, the app retrieves publicly available exchange-rate
+      data from a third-party rates provider. These requests contain no personal or
+      financial information about you — only a request for current rates.</p>
+
+      <h2>How we use your information</h2>
+      <ul>
+        <li>To create and secure your account and authenticate you.</li>
+        <li>To store your financial data and synchronize it across the devices where you
+        are signed in.</li>
+        <li>To provide the app’s core features: tracking expenses and income, budgets,
+        goals, reports, and multi-currency conversion.</li>
+        <li>To maintain the security and reliability of the service.</li>
+      </ul>
+      <p>We do not sell your personal information, and we do not share it with third parties
+      for their own marketing.</p>
+
+      <h2>Where your data is stored</h2>
+      <p>Your account and financial data are stored on our backend service, which is hosted
+      on Render (application hosting) and Neon (managed PostgreSQL database). These providers
+      act as data processors on our behalf and may process data in the regions where their
+      infrastructure operates. All communication between the app and our servers is encrypted
+      in transit using HTTPS.</p>
+
+      <h2>On-device data and biometrics</h2>
+      <p>Some data is kept on your device for the app to function, including a local copy of
+      your data and your authentication tokens, which are held in your device’s secure
+      storage. If you enable biometric unlock (Face ID or fingerprint), that authentication
+      is performed entirely by your device’s operating system. Your biometric data never
+      leaves your device and is never transmitted to or stored by us.</p>
+
+      <h2>Data retention and deletion</h2>
+      <p>We keep your information for as long as your account exists. You can permanently
+      delete your account at any time from within the app under
+      <em>Accounts → Settings → Delete account</em>. Deleting your account immediately and
+      permanently removes your account and all associated financial data from our servers,
+      including any synced records and active sessions. This action cannot be undone. You may
+      also email <a href="mailto:vincentdit@gmail.com">vincentdit@gmail.com</a> to request
+      deletion.</p>
+
+      <h2>Security</h2>
+      <p>We take reasonable measures to protect your information, including encrypted
+      transmission (HTTPS), hashed passwords, short-lived access tokens with rotating refresh
+      tokens, and rate limiting on our authentication endpoints. However, no method of
+      transmission or storage is completely secure, and we cannot guarantee absolute security.</p>
+
+      <h2>Children’s privacy</h2>
+      <p>FinTrackPro is not directed to children under the age of 13, and we do not knowingly
+      collect personal information from children under 13. If you believe a child has provided
+      us with personal information, please contact us and we will delete it.</p>
+
+      <h2>Your rights</h2>
+      <p>Depending on where you live, you may have rights to access, correct, or delete your
+      personal information, or to object to or restrict certain processing. You can exercise
+      most of these directly in the app (your data is visible and editable, and you can delete
+      your account), or by contacting us at
+      <a href="mailto:vincentdit@gmail.com">vincentdit@gmail.com</a>.</p>
+
+      <h2>Changes to this policy</h2>
+      <p>We may update this Privacy Policy from time to time. When we do, we will revise the
+      “Last updated” date above and, where appropriate, provide notice within the app. Your
+      continued use of the app after changes take effect constitutes acceptance of the updated
+      policy.</p>
+
+      <h2>Contact us</h2>
+      <p>If you have questions or requests regarding this policy or your personal information,
+      contact:<br />
+      Vincent J. Maro<br />
+      <a href="mailto:vincentdit@gmail.com">vincentdit@gmail.com</a></p>
+
+      <div class="note">
+        This document is provided as a starting template based on how the app currently works.
+        It is not legal advice. Please review it and adapt it to your specific circumstances and
+        the laws that apply to you (for example, GDPR or local Tanzanian data-protection
+        requirements) before publishing it or submitting your app.
+      </div>
+
+      <footer class="muted">© 2026 FinTrackPro. All rights reserved.</footer>
+    </div>
+  </div>
+</body>
+</html>

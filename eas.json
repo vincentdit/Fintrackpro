@@ -11,7 +11,7 @@
       "ios": { "simulator": false },
       "env": {
         "EXPO_PUBLIC_DATA_SOURCE": "mock",
-        "EXPO_PUBLIC_API_BASE_URL": "https://fintrackpro-api.onrender.com"
+        "EXPO_PUBLIC_API_BASE_URL": "https://fintrackpro-api-bc9q.onrender.com"
       }
     },
     "development-simulator": {
@@ -23,14 +23,14 @@
       "android": { "buildType": "apk" },
       "env": {
         "EXPO_PUBLIC_DATA_SOURCE": "mock",
-        "EXPO_PUBLIC_API_BASE_URL": "https://fintrackpro-api.onrender.com"
+        "EXPO_PUBLIC_API_BASE_URL": "https://fintrackpro-api-bc9q.onrender.com"
       }
     },
     "production": {
       "autoIncrement": true,
       "env": {
         "EXPO_PUBLIC_DATA_SOURCE": "mock",
-        "EXPO_PUBLIC_API_BASE_URL": "https://fintrackpro-api.onrender.com"
+        "EXPO_PUBLIC_API_BASE_URL": "https://fintrackpro-api-bc9q.onrender.com"
       }
     }
   },
