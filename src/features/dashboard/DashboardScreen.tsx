@@ -34,6 +34,7 @@ export function DashboardScreen() {
   const net = totalBalance(accounts, base, rates);
   const income = monthlyIncome(transactions, base, rates);
   const expenses = monthlyExpenses(transactions, base, rates);
+  const netFlow = income - expenses;
   const statuses = budgetStatuses(budgets, categories, transactions, base, rates).slice(0, 3);
   const recent = transactions.filter((t) => !t.deleted).slice(0, 4);
   const catById = new Map(categories.map((c) => [c.id, c]));
@@ -69,6 +70,14 @@ export function DashboardScreen() {
             </Text>
             <Text weight="600" tone="expense">
               {formatCurrency(expenses, user.baseCurrency)}
+            </Text>
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text variant="small" tone="muted">
+              {t('dash.netMo')}
+            </Text>
+            <Text weight="600" tone={netFlow >= 0 ? 'income' : 'expense'}>
+              {formatCurrency(netFlow, user.baseCurrency, { signed: true })}
             </Text>
           </View>
         </View>
